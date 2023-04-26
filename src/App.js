@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 function App() {
   const [colors, setColors] = useState([]);
-  const [numberOfSquares, setNumberOfSquares] = useState(0);
 
   const getRandomColor = () => {
     let color = "#";
@@ -13,16 +12,17 @@ function App() {
   };
 
   const addSquare = () => {
-    const newColors = [...colors, getRandomColor()];
-    setColors(newColors);
-    setNumberOfSquares(newColors.length);
+    setColors(previousState => [...previousState, getRandomColor()])
+  };
+  
+  const removeSquare = () => {
+    colors.length > 0 && setColors(previousState => [...previousState.slice(0, colors.length - 1)])
   };
 
-  const removeSquare = () => {
+  const handleSquareClick = (index) => {
     const newColors = [...colors];
-    newColors.pop();
+    newColors[index] = getRandomColor();
     setColors(newColors);
-    setNumberOfSquares(newColors.length);
   };
 
   const squareStyle = {
@@ -33,19 +33,12 @@ function App() {
   };
 
   const squares = colors
-    .slice(0, numberOfSquares)
     .map((color, index) => (
       <div
         key={index}
         style={{ ...squareStyle, backgroundColor: color }}
-        onClick={() =>
-          setColors([
-            ...colors.slice(0, index),
-            getRandomColor(),
-            ...colors.slice(index + 1),
-          ])
-        }
-      ></div>
+        onClick={() => handleSquareClick(index)}
+      />
     ));
 
   return (
